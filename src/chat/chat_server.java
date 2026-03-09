@@ -175,7 +175,7 @@ public class chat_server extends javax.swing.JFrame {
 
             while (!msgin.equals("exit")) {
                 msgin = dis.readUTF();
-                msg_area.setText(msg_area.getText() + "\n Tuyết Diamon : " + msgin);
+                msg_area.setText(msg_area.getText() + "\n Ngọc Hảo : " + msgin);
             }
 
         } catch (Exception e) {

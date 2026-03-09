@@ -170,7 +170,7 @@ public class chat_client extends javax.swing.JFrame {
 
             while (!msgin.equals("exit")) {
                 msgin = dis.readUTF();
-                msg_area.setText(msg_area.getText() + "\n Ngọc Hảo : " + msgin);
+                msg_area.setText(msg_area.getText() + "\n Tuyết Diamon : " + msgin);
             }
 
         } catch (Exception e) {
