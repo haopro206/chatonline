@@ -5,7 +5,9 @@
  */
 package chat;
 
+import static chat.chat_server.dis;
 import static chat.chat_server.dout;
+import static chat.chat_server.s;
 import static chat.chat_server.ss;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -17,16 +19,41 @@ import java.net.Socket;
  * @author mukul
  */
 public class chat_client extends javax.swing.JFrame {
+    
+
     static Socket s;
     static DataInputStream dis;
     static DataOutputStream dout;
+  
 
     /**
      * Creates new form chat_client
      */
-    public chat_client() {
-        initComponents();
-    }
+   public chat_client() {
+    initComponents();
+    msg_area.setEditable(false);
+
+    msg_text.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            msg_sendActionPerformed(evt);
+        }
+    });
+
+    msg_text.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyPressed(java.awt.event.KeyEvent evt) {
+         
+               
+         
+        }
+    });
+
+
+
+}
+    
+    public void setStatus(String status){
+    jLabel2.setText(status);
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -42,18 +69,22 @@ public class chat_client extends javax.swing.JFrame {
         msg_text = new javax.swing.JTextField();
         msg_send = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         msg_area.setColumns(20);
         msg_area.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
         msg_area.setRows(5);
+        msg_area.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jScrollPane1.setViewportView(msg_area);
 
+        msg_text.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
         msg_send.setBackground(new java.awt.Color(51, 204, 255));
-        msg_send.setText("Gửi 📤");
+        msg_send.setText("➤");
+        msg_send.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         msg_send.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 msg_sendActionPerformed(evt);
@@ -63,10 +94,9 @@ public class chat_client extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel1.setText("Ăn vặt cùng bà Tuyết");
 
-        jLabel3.setText("<html><font color='#00C853'>●</font> Đang hoạt động</html>");
-
-        jLabel2.setForeground(new java.awt.Color(0, 153, 255));
-        jLabel2.setText("✔");
+        jLabel3.setForeground(new java.awt.Color(0, 153, 255));
+        jLabel3.setText("✅");
+        jLabel3.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -82,11 +112,11 @@ public class chat_client extends javax.swing.JFrame {
                         .addComponent(msg_send))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jLabel3)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -96,11 +126,11 @@ public class chat_client extends javax.swing.JFrame {
                 .addGap(4, 4, 4)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
+                    .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(msg_text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -115,11 +145,14 @@ public class chat_client extends javax.swing.JFrame {
         // TODO add your handling code here:
         
          try{
-        String msg="";
-        msg=msg_text.getText();
-        dout.writeUTF(msg);
-        msg_text.setText("");
-        }
+       String msg = msg_text.getText();
+
+dout.writeUTF(msg);
+
+msg_area.setText(msg_area.getText() + "\nBạn : " + msg);
+
+
+}
         catch(Exception e)
         {
         //handle the exception here
@@ -155,27 +188,40 @@ public class chat_client extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new chat_client().setVisible(true);
-            }
-        });
+       chat_client cc = new chat_client();
+cc.setVisible(true);
         
-         try {
-            String msgin = "";
+        while(true){
+    try{
+
+        s = new Socket("127.0.0.1",1201);
+
+        cc.setStatus("<html><font color='#00C853'>●</font> Online</html>");
+
+        dis = new DataInputStream(s.getInputStream());
+        dout = new DataOutputStream(s.getOutputStream());
+
+        String msgin="";
+        while(!msgin.equals("exit")){
+            msgin=dis.readUTF();
             
-            s = new Socket("127.0.0.1",1201); // ip address is of localhost because server is running on the same mschine
-            dis = new DataInputStream(s.getInputStream());
-            dout = new DataOutputStream(s.getOutputStream());
+            msg_area.setText(msg_area.getText()+"\n Tuyết Diamon : "+msgin);
+            msg_area.setCaretPosition(msg_area.getDocument().getLength());
+            
+            }    
+        
 
-            while (!msgin.equals("exit")) {
-                msgin = dis.readUTF();
-                msg_area.setText(msg_area.getText() + "\n Tuyết Diamon : " + msgin);
-            }
+    }catch(Exception e){
 
-        } catch (Exception e) {
-            //handle the exception here
-        }
+        cc.setStatus("<html><font color='red'>●</font> Offline</html>");
+
+        try{
+            Thread.sleep(2000);
+        }catch(Exception ex){}
+
+    }
+}
+
 
         
     }

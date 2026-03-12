@@ -5,6 +5,7 @@
  */
 package chat;
 
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.ServerSocket;
@@ -20,13 +21,16 @@ public class chat_server extends javax.swing.JFrame {
     static Socket s;
     static DataInputStream dis;
     static DataOutputStream dout;
+     
 
     /**
      * Creates new form chat_server
      */
     public chat_server() {
-        initComponents();
-    }
+    initComponents();
+    msg_area.setEditable(false);
+
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -52,8 +56,10 @@ public class chat_server extends javax.swing.JFrame {
         msg_area.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
         msg_area.setForeground(new java.awt.Color(255, 255, 255));
         msg_area.setRows(5);
+        msg_area.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jScrollPane1.setViewportView(msg_area);
 
+        msg_text.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         msg_text.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 msg_textActionPerformed(evt);
@@ -61,7 +67,8 @@ public class chat_server extends javax.swing.JFrame {
         });
 
         msg_send.setBackground(new java.awt.Color(51, 204, 255));
-        msg_send.setText("Gửi 📤 ");
+        msg_send.setText("➤");
+        msg_send.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         msg_send.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 msg_sendActionPerformed(evt);
@@ -72,8 +79,6 @@ public class chat_server extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel1.setText("Nguyễn Ngọc Hảo");
 
-        jLabel2.setText("<html><font color='#00C853'>●</font> Đang hoạt động</html>");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -83,14 +88,14 @@ public class chat_server extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(msg_text)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(msg_send))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(msg_text)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(msg_send)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -100,10 +105,10 @@ public class chat_server extends javax.swing.JFrame {
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(msg_text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(msg_text)
                     .addComponent(msg_send))
                 .addContainerGap())
         );
@@ -112,13 +117,32 @@ public class chat_server extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void msg_sendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msg_sendActionPerformed
-        // TODO add your handling code here:
-        
-        try{
-        String msg="";
-        msg=msg_text.getText();
+  
+                                                 
+
+    try{
+
+        String msg = msg_text.getText();
+
         dout.writeUTF(msg);
+
+        msg_area.setText(msg_area.getText() + "\n Bạn : " + msg);
+
         msg_text.setText("");
+
+      
+    }
+    catch(Exception e){
+
+    }
+
+
+        try{
+       String msg = msg_text.getText();
+
+
+
+
         }
         catch(Exception e)
         {
@@ -129,7 +153,7 @@ public class chat_server extends javax.swing.JFrame {
     }//GEN-LAST:event_msg_sendActionPerformed
 
     private void msg_textActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msg_textActionPerformed
-        // TODO add your handling code here:
+      msg_sendActionPerformed(evt);
     }//GEN-LAST:event_msg_textActionPerformed
 
     /**
@@ -160,27 +184,44 @@ public class chat_server extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new chat_server().setVisible(true);
-            }
-        });
+       chat_server cs = new chat_server();
+    cs.setVisible(true);
+
 
         try {
-            String msgin = "";
-            ss = new ServerSocket(1201);
-            s = ss.accept();
-            dis = new DataInputStream(s.getInputStream());
-            dout = new DataOutputStream(s.getOutputStream());
+    String msgin = "";
+    ss = new ServerSocket(1201);
 
-            while (!msgin.equals("exit")) {
-                msgin = dis.readUTF();
-                msg_area.setText(msg_area.getText() + "\n Ngọc Hảo : " + msgin);
-            }
+    cs.jLabel2.setText("<html><font color='red'>●</font> Offline</html>");
 
-        } catch (Exception e) {
-            //handle the exception here
-        }
+    s = ss.accept();
+
+    cs.jLabel2.setText("<html><font color='#00C853'>●</font> Online</html>");
+
+    dis = new DataInputStream(s.getInputStream());
+    dout = new DataOutputStream(s.getOutputStream());
+
+    while (!msgin.equals("exit")) {
+       msgin = dis.readUTF();
+
+if(msgin.startsWith("MSG:")){
+
+    String[] parts = msgin.split(":",3);
+
+    String id = parts[1];
+    String text = parts[2];
+
+    msg_area.setText(msg_area.getText() + "\nClient(" + id + ") : " + text);
+}
+        msg_area.setText(msg_area.getText() + "\n Ngọc Hảo : " + msgin);
+        msg_area.setCaretPosition(msg_area.getDocument().getLength());
+    }
+
+} catch (Exception e) {
+
+    cs.jLabel2.setText("<html><font color='red'>●</font> Offline</html>");
+
+}
 
     }
 
